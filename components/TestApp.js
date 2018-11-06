@@ -6,15 +6,17 @@ import { onChangeOnCalendar, onClickDay} from "../actions/actions";
 class TestApp extends React.Component {
 
     render() {
-        console.error("Date", this.props.selectedDate);
+        const typeOfCalendar = "US";
+        const localeOfCalendar = "en";
+        console.error("current Date",this.props.currentDate);
         return (
             <div>
                 <Calendar
                     onChange={this.props.onChange.bind(this)}
-                    value={this.props.selectedDate}
-                    calendarType={this.props.type}
+                    value={this.props.currentDate}
+                    calendarType={typeOfCalendar}
                     onClickDay={this.props.onClickDay.bind(this)}
-                    locale={this.props.locale}
+                    locale={localeOfCalendar}
                 />
             </div>
         );
@@ -23,9 +25,7 @@ class TestApp extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        selectedDate: state.selectedDate,
-        type: state.typeOfCalendar,
-        locale: state.localeOfCalendar
+        currentDate: state.currentDate,
     }
 };
 
@@ -34,8 +34,8 @@ const mapDispatchToProps = (dispatch) => {
         onChange: (event) => {
             dispatch(onChangeOnCalendar(event));
         },
-        onClickDay: () => {
-            dispatch(onClickDay());
+        onClickDay: (event) => {
+            dispatch(onClickDay(event));
         }
     }
 };
