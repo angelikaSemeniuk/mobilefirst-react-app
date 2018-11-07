@@ -1,16 +1,10 @@
-const initialState = { currentDate: new Date(), selectedDay: false, episodes: [], error: "", recieveOriginalImage: false, originalImage: null };
+const initialState = { currentDate: new Date(), selectedDay: false, episodes: [], error: "", receiveOriginalImage: false, modalIsOpen:false, originalImage: null };
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
-        case "ONCHANGE_ON_CALENDAR": {
-            console.error("action-ONCHANGE_ON_CALENDAR");
-            return Object.assign({}, state, {
-                currentDate: action.value
-            })
-        }
         case "ONCLICK_ON_CALENDAR_ITEM": {
-            console.error("action-ONCLICK_ON_CALENDAR_ITEM");
             return Object.assign({}, state, {
+                currentDate: action.value,
                 selectedDay: true
             })
         }
@@ -26,23 +20,30 @@ const reducer = (state = initialState, action) => {
         }
         case "HANDLE_ACTION_FOR_DISPLAY_CONTENT": {
             return Object.assign({}, state, {
-                currentDate: new Date(),
                 selectedDay: false,
                 episodes: [],
                 error: "",
-                recieveOriginalImage: false,
+                receiveOriginalImage: false,
                 originalImage: null
 
             })
         }
-        case "RECIEVE_RESPONSE_BY_IMDB_ID": {
+        case "RECEIVE_RESPONSE_BY_IMDB_ID": {
             return Object.assign({}, state, {
-                recieveOriginalImage: true
+                receiveOriginalImage: true,
+                modalIsOpen: true
             })
         }
         case "RECEIVE_EPISODES_ORIGINAL_IMAGE": {
             return Object.assign({}, state, {
                 originalImage: action.value
+            })
+        }
+        case "CLOSE_ORIGINAL_IMAGE": {
+            return Object.assign({}, state, {
+                originalImage: null,
+                receiveOriginalImage: false,
+                modalIsOpen: false
             })
         }
         default:

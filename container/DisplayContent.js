@@ -1,31 +1,57 @@
 import React from "react";
 import { connect } from "react-redux";
-import { handleActionForDisplayContent, makeRequestByImdbId } from "../actions/actions";
+import Modal from "react-modal";
+import { handleActionForDisplayContent, makeRequestByImdbId, closeOriginalImage } from "../actions/actions";
+
+const modalStyle = {
+    backgroundColor: '#fff',
+    borderRadius: 5,
+    maxWidth: 300,
+    minHeight: 'auto',
+    margin: '0 auto',
+    padding: 30
+};
+
+Modal.setAppElement(document.getElementById("root"));
 
 class DisplayContent extends React.Component {
 
     render() {
-        console.error("action- in DisplayContent-episodes", this.props.episodes);
         const listOfItems = this.props.episodes.map((item, index) => (
             <li key={index}>
                 <div>
-                    <p>{item.title}</p>
-                    {item.image.medium ?
-                        <img src={item.image.medium} onClick={this.props.makeRequestByImdbId.bind(this, item.imdbId)}/> :
-                        <p>No image</p>
-                    }
-                    <p>{item.premiered}</p>
-                    <p>Season: {item.season}</p>
-                    <p>Episode: {item.episode}</p>
+                    <div>
+                        <p>{item.title}</p>
+                        {item.image && item.image.medium ?
+                            <img src={item.image.medium} onClick={this.props.makeRequestByImdbId.bind(this, item.imdbId)}/> :
+                            <p>No image</p>
+                        }
+                        <p>{item.premiered}</p>
+                        <p>Season: {item.season}</p>
+                        <p>Episode: {item.episode}</p>
+                    </div>
                 </div>
             </li>
         ));
         return(
             <div>
-                { this.props.selectedDay &&
+                <div>
+                    { this.props.selectedDay &&
                     <button onClick={this.props.handleActionForDisplayContent.bind(this)}>Back to calendar</button>
-                }
-                <ul>{listOfItems}</ul>
+                    }
+                    <ul>{listOfItems}</ul>
+                </div>
+                <Modal
+                    isOpen={this.props.modalIsOpen}
+                    onRequestClose={this.props.closeOriginalImage}
+                    style={modalStyle}
+                >
+                    {this.props.originalImage ?
+                        <img src={this.props.originalImage}/> :
+                        <p>No image</p>
+                    }
+                    <button onClick={this.props.closeOriginalImage.bind(this)}>X</button>
+                </Modal>
             </div>
         );
     }
@@ -33,7 +59,9 @@ class DisplayContent extends React.Component {
 const mapStateToProps = (state) => {
     return {
         episodes: state.episodes,
-        selectedDay: state.selectedDay
+        selectedDay: state.selectedDay,
+        originalImage: state.originalImage,
+        modalIsOpen: state.modalIsOpen
     }
 };
 const mapDispatchToProps = (dispatch) => {
@@ -44,6 +72,9 @@ const mapDispatchToProps = (dispatch) => {
         makeRequestByImdbId: (id, event) => {
             event.preventDefault();
             dispatch(makeRequestByImdbId(id))
+        },
+        closeOriginalImage: () => {
+            dispatch(closeOriginalImage());
         }
     }
 };
