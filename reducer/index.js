@@ -1,4 +1,4 @@
-const initialState = { currentDate: new Date(), onClickDay: false, episodes: [], error: "" };
+const initialState = { currentDate: new Date(), selectedDay: false, episodes: [], error: "", recieveOriginalImage: false, originalImage: null };
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
@@ -11,7 +11,7 @@ const reducer = (state = initialState, action) => {
         case "ONCLICK_ON_CALENDAR_ITEM": {
             console.error("action-ONCLICK_ON_CALENDAR_ITEM");
             return Object.assign({}, state, {
-                onClickDay: true
+                selectedDay: true
             })
         }
         case "RECEIVE_EPISODES": {
@@ -27,9 +27,22 @@ const reducer = (state = initialState, action) => {
         case "HANDLE_ACTION_FOR_DISPLAY_CONTENT": {
             return Object.assign({}, state, {
                 currentDate: new Date(),
-                onClickDay: false,
+                selectedDay: false,
                 episodes: [],
-                error: ""
+                error: "",
+                recieveOriginalImage: false,
+                originalImage: null
+
+            })
+        }
+        case "RECIEVE_RESPONSE_BY_IMDB_ID": {
+            return Object.assign({}, state, {
+                recieveOriginalImage: true
+            })
+        }
+        case "RECEIVE_EPISODES_ORIGINAL_IMAGE": {
+            return Object.assign({}, state, {
+                originalImage: action.value
             })
         }
         default:

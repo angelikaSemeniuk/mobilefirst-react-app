@@ -1,14 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
-import { handleActionForDisplayContent } from "../actions/actions";
+import { handleActionForDisplayContent, makeRequestByImdbId } from "../actions/actions";
 
 class DisplayContent extends React.Component {
-
-    componentWillUnmount() {
-        this.props.handleActionForDisplayContent();
-
-
-    }
 
     render() {
         console.error("action- in DisplayContent-episodes", this.props.episodes);
@@ -16,9 +10,9 @@ class DisplayContent extends React.Component {
             <li key={index}>
                 <div>
                     <p>{item.title}</p>
-                    {
-                        item.image.medium &&
-                        <img src={item.image.medium}/>
+                    {item.image.medium ?
+                        <img src={item.image.medium} onClick={this.props.makeRequestByImdbId.bind(this, item.imdbId)}/> :
+                        <p>No image</p>
                     }
                     <p>{item.premiered}</p>
                     <p>Season: {item.season}</p>
@@ -27,19 +21,29 @@ class DisplayContent extends React.Component {
             </li>
         ));
         return(
-            <ul>{listOfItems}</ul>
+            <div>
+                { this.props.selectedDay &&
+                    <button onClick={this.props.handleActionForDisplayContent.bind(this)}>Back to calendar</button>
+                }
+                <ul>{listOfItems}</ul>
+            </div>
         );
     }
 }
 const mapStateToProps = (state) => {
     return {
-        episodes: state.episodes
+        episodes: state.episodes,
+        selectedDay: state.selectedDay
     }
 };
 const mapDispatchToProps = (dispatch) => {
     return {
         handleActionForDisplayContent: () => {
             dispatch(handleActionForDisplayContent());
+        },
+        makeRequestByImdbId: (id, event) => {
+            event.preventDefault();
+            dispatch(makeRequestByImdbId(id))
         }
     }
 };
