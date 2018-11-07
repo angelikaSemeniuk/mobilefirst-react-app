@@ -1,7 +1,8 @@
 import React from 'react';
-import Calendar from "react-calendar/dist/entry.nostyle";
 import { connect } from "react-redux";
+import Calendar from "react-calendar/dist/entry.nostyle";
 import { onChangeOnCalendar, onClickDay} from "../actions/actions";
+import DisplayContent from "../container/DisplayContent";
 
 class TestApp extends React.Component {
 
@@ -18,6 +19,7 @@ class TestApp extends React.Component {
                     onClickDay={this.props.onClickDay.bind(this)}
                     locale={localeOfCalendar}
                 />
+                <DisplayContent/>
             </div>
         );
     }

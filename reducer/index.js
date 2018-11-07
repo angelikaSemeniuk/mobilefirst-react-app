@@ -1,4 +1,4 @@
-const initialState = { currentDate: new Date(), onClickItem: false, episodes: [], error: "" };
+const initialState = { currentDate: new Date(), onClickDay: false, episodes: [], error: "" };
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
@@ -11,7 +11,7 @@ const reducer = (state = initialState, action) => {
         case "ONCLICK_ON_CALENDAR_ITEM": {
             console.error("action-ONCLICK_ON_CALENDAR_ITEM");
             return Object.assign({}, state, {
-                onClickItem: true
+                onClickDay: true
             })
         }
         case "RECEIVE_EPISODES": {
@@ -24,8 +24,17 @@ const reducer = (state = initialState, action) => {
                 error: action.value
             })
         }
+        case "HANDLE_ACTION_FOR_DISPLAY_CONTENT": {
+            return Object.assign({}, state, {
+                currentDate: new Date(),
+                onClickDay: false,
+                episodes: [],
+                error: ""
+            })
+        }
+        default:
+            return state;
     }
-    return state;
 }
 
 export default reducer;
