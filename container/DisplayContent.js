@@ -1,32 +1,43 @@
 import React from "react";
 import { connect } from "react-redux";
 import Modal from "react-modal";
-import { handleActionForDisplayContent, makeRequestByImdbId, closeOriginalImage } from "../actions/actions";
+import { makeRequestByImdbId, closeOriginalImage } from "../actions/actions";
 
 const modalStyle = {
-    backgroundColor: '#fff',
-    borderRadius: 5,
-    maxWidth: 300,
-    minHeight: 'auto',
-    margin: '0 auto',
-    padding: 30
+    content: {
+        top: '50%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        marginRight: '-50%',
+        transform: 'translate(-50%, -50%)',
+        minHeight: "300px",
+        fontSize: "30px",
+    }
 };
 
 Modal.setAppElement(document.getElementById("root"));
 
+const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
 class DisplayContent extends React.Component {
 
     render() {
+        const regex = /^(.*?)-/;
         const listOfItems = this.props.episodes.map((item, index) => (
-            <li key={index}>
-                <div>
-                    <div>
+            <li key={index} className="listItem">
+                <div className="leftColumn">
+                    {item.image && item.image.medium ?
+                        <img src={item.image.medium} onClick={this.props.makeRequestByImdbId.bind(this, item.imdbId)}/> :
+                        <p>No image</p>
+                    }
+                </div>
+                <div className="rightColumn">
+                    <div className="rightColumnRow">
                         <p>{item.title}</p>
-                        {item.image && item.image.medium ?
-                            <img src={item.image.medium} onClick={this.props.makeRequestByImdbId.bind(this, item.imdbId)}/> :
-                            <p>No image</p>
-                        }
-                        <p>{item.premiered}</p>
+                        <p>{item.premiered.match(regex)[1]}</p>
+                    </div>
+                    <div className="rbottomRow">
                         <p>Season: {item.season}</p>
                         <p>Episode: {item.episode}</p>
                     </div>
@@ -34,13 +45,9 @@ class DisplayContent extends React.Component {
             </li>
         ));
         return(
-            <div>
-                <div>
-                    { this.props.selectedDay &&
-                    <button onClick={this.props.handleActionForDisplayContent.bind(this)}>Back to calendar</button>
-                    }
-                    <ul>{listOfItems}</ul>
-                </div>
+            <>
+                <p className="currentDate">{this.props.currentDate.getDate()} {months[this.props.currentDate.getMonth()]} {this.props.currentDate.getFullYear()}</p>
+                <ul className="list">{listOfItems}</ul>
                 <Modal
                     isOpen={this.props.modalIsOpen}
                     onRequestClose={this.props.closeOriginalImage}
@@ -52,7 +59,7 @@ class DisplayContent extends React.Component {
                     }
                     <button onClick={this.props.closeOriginalImage.bind(this)}>X</button>
                 </Modal>
-            </div>
+            </>
         );
     }
 }
@@ -61,14 +68,12 @@ const mapStateToProps = (state) => {
         episodes: state.episodes,
         selectedDay: state.selectedDay,
         originalImage: state.originalImage,
-        modalIsOpen: state.modalIsOpen
+        modalIsOpen: state.modalIsOpen,
+        currentDate: state.currentDate,
     }
 };
 const mapDispatchToProps = (dispatch) => {
     return {
-        handleActionForDisplayContent: () => {
-            dispatch(handleActionForDisplayContent());
-        },
         makeRequestByImdbId: (id, event) => {
             event.preventDefault();
             dispatch(makeRequestByImdbId(id))
